@@ -1,0 +1,124 @@
+{\rtf1\fbidis\ansi\ansicpg1252\deff0\nouicompat\deflang1033{\fonttbl{\f0\fnil Segoe UI;}}
+{\colortbl ;\red0\green0\blue0;}
+{\*\generator Riched20 10.0.19041}\viewkind4\uc1 
+\pard\tx720\cf1\f0\fs38 <!DOCTYPE html>\par
+<html>\par
+<head>\par
+  <title>Hero vs Monster</title>\par
+  <style>\par
+    body \{ margin: 0; overflow: hidden; background: black; \}\par
+    canvas \{ display: block; margin: 0 auto; background: #333; \}\par
+  </style>\par
+</head>\par
+<body>\par
+  <canvas id="gameCanvas" width="800" height="500"></canvas>\par
+\par
+  <script>\par
+    const canvas = document.getElementById('gameCanvas');\par
+    const ctx = canvas.getContext('2d');\par
+\par
+    // Game state\par
+    let hero = \{ x: 100, y: 350, w: 50, h: 50, color: 'blue', hp: 100 \};\par
+    let monster = \{ x: 600, y: 300, w: 100, h: 100, color: 'red', hp: 300 \};\par
+    let keys = \{\};\par
+    let volcanoY = 450;\par
+\par
+    // Listen for keys\par
+    document.addEventListener('keydown', e => keys[e.key] = true);\par
+    document.addEventListener('keyup', e => keys[e.key] = false);\par
+\par
+    function drawBackground() \{\par
+      // Sky\par
+      ctx.fillStyle = '#222';\par
+      ctx.fillRect(0, 0, canvas.width, canvas.height);\par
+\par
+      // Volcano\par
+      ctx.fillStyle = 'darkred';\par
+      ctx.beginPath();\par
+      ctx.moveTo(300, volcanoY);\par
+      ctx.lineTo(400, 200);\par
+      ctx.lineTo(500, volcanoY);\par
+      ctx.closePath();\par
+      ctx.fill();\par
+\par
+      // Lava\par
+      ctx.fillStyle = 'orange';\par
+      ctx.beginPath();\par
+      ctx.moveTo(375, 200);\par
+      ctx.lineTo(400, 180);\par
+      ctx.lineTo(425, 200);\par
+      ctx.closePath();\par
+      ctx.fill();\par
+    \}\par
+\par
+    function drawCharacter(char) \{\par
+      ctx.fillStyle = char.color;\par
+      ctx.fillRect(char.x, char.y, char.w, char.h);\par
+\par
+      // Shield\par
+      if(char === hero)\{\par
+        ctx.fillStyle = 'silver';\par
+        ctx.fillRect(char.x - 10, char.y + 10, 10, 30);\par
+\par
+        // Sword\par
+        ctx.fillStyle = 'gold';\par
+        ctx.fillRect(char.x + char.w, char.y + 10, 10, 30);\par
+      \}\par
+    \}\par
+\par
+    function drawHealthBars() \{\par
+      // Hero HP\par
+      ctx.fillStyle = 'lime';\par
+      ctx.fillRect(20, 20, hero.hp * 2, 20);\par
+      ctx.strokeStyle = 'white';\par
+      ctx.strokeRect(20, 20, 200, 20);\par
+\par
+      // Monster HP\par
+      ctx.fillStyle = 'orange';\par
+      ctx.fillRect(580, 20, monster.hp / 1.5, 20);\par
+      ctx.strokeStyle = 'white';\par
+      ctx.strokeRect(580, 20, 200, 20);\par
+    \}\par
+\par
+    function update() \{\par
+      // Movement\par
+      if(keys['ArrowLeft']) hero.x -= 5;\par
+      if(keys['ArrowRight']) hero.x += 5;\par
+\par
+      // Attack\par
+      if(keys[' ']) \{ // Space key\par
+        if(hero.x + hero.w >= monster.x && hero.x <= monster.x + monster.w)\{\par
+          monster.hp -= 1;\par
+        \}\par
+      \}\par
+\par
+      // Monster auto-attacks if close\par
+      if(monster.x - hero.x < 80)\{\par
+        hero.hp -= 0.5;\par
+      \}\par
+    \}\par
+\par
+    function gameLoop()\{\par
+      update();\par
+      drawBackground();\par
+      drawCharacter(hero);\par
+      drawCharacter(monster);\par
+      drawHealthBars();\par
+\par
+      if(hero.hp <= 0)\{\par
+        alert("You Died! Refresh to try again.");\par
+        return;\par
+      \}\par
+      if(monster.hp <= 0)\{\par
+        alert("Monster Defeated! You Win!");\par
+        return;\par
+      \}\par
+\par
+      requestAnimationFrame(gameLoop);\par
+    \}\par
+\par
+    gameLoop();\par
+  </script>\par
+</body>\par
+</html>\par
+}
